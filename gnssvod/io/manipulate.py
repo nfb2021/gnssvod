@@ -13,7 +13,8 @@ __all__ = ["rinex_merge"]
 global _FILEPATH
 _FILEPATH = os.path.dirname(os.path.abspath(__file__))
 
-def rinex_merge(station, doy, year, directory = os.getcwd()):
+
+def rinex_merge(station, doy, year, directory=os.getcwd()):
     """
     Parameters:
         station: str
@@ -25,20 +26,20 @@ def rinex_merge(station, doy, year, directory = os.getcwd()):
     Output:
         Merged rinex observation file
     """
-    rinexObsFiles=[] 
+    rinexObsFiles = []
     file_start = station + str(doy)
-    file_end = "."+str(year)[2:]+"o" 
-    file_fullName = file_start+"0"+file_end 
+    file_end = "." + str(year)[2:] + "o"
+    file_fullName = file_start + "0" + file_end
     for file in os.listdir(directory):
         if file.startswith(file_start) and file.endswith(file_end):
             rinexObsFiles.append(os.path.join(directory, file))
 
-    if os.path.join(directory,file_fullName) in rinexObsFiles:
-        print("The file",file_fullName,"exists in the working directory!")
+    if os.path.join(directory, file_fullName) in rinexObsFiles:
+        print("The file", file_fullName, "exists in the working directory!")
         while True:
             choice = input("Would you like to overwrite the file [Y/N]? | ")
             if choice.upper() == "Y" or choice.upper() == "Yes":
-                rinexObsFiles.remove(os.path.join(directory,file_fullName))
+                rinexObsFiles.remove(os.path.join(directory, file_fullName))
                 break
             elif choice.upper() == "N" or choice.upper() == "NO":
                 sys.exit("Exiting...")

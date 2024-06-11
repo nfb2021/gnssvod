@@ -17,6 +17,7 @@ def isfloat(value):
     except ValueError:
         return False
 
+
 def isint(value):
     """ To check if any variable can be converted to integer """
     try:
@@ -24,6 +25,7 @@ def isint(value):
         return True
     except ValueError:
         return False
+
 
 def check_internet():
     """ To check if there is an internet connection for FTP downloads """
@@ -35,24 +37,27 @@ def check_internet():
     except:
         connection.close()
         return False
-    
+
+
 def iszip(fileName):
-    if fileName.lower().endswith((".z",".zip",".gz")):
+    if fileName.lower().endswith((".z", ".zip", ".gz")):
         return True
     else:
         return False
 
+
 def does_a_zip_exist(fileName):
     if os.path.exists(fileName + ".z"):
-        return fileName+".z"
+        return fileName + ".z"
     if os.path.exists(fileName + ".Z"):
-        return fileName+".Z"
+        return fileName + ".Z"
     if os.path.exists(fileName + ".gz"):
-        return fileName+".gz"
+        return fileName + ".gz"
     if os.path.exists(fileName + ".zip"):
-        return fileName+".zip"
+        return fileName + ".zip"
     else:
         return False
+
 
 def isexist(fileName):
     if os.path.exists(fileName) == False:
@@ -63,38 +68,69 @@ def isexist(fileName):
             extension = fileName.split(".")[1].lower()
             if extension[-1] == "o":
                 if is_IGS(fileName[:4]):
-                    print(fileName + ".Z does not exist in working directory | Downloading...")
+                    print(
+                        fileName +
+                        ".Z does not exist in working directory | Downloading..."
+                    )
                     fileEpoch = doy2date(fileName)
-                    download.get_rinex([fileName[:4]], fileEpoch, Datetime = True)
-                    print(" | Download completed for", fileName + ".Z", " | Extracting...")
+                    download.get_rinex([fileName[:4]],
+                                       fileEpoch,
+                                       Datetime=True)
+                    print(" | Download completed for", fileName + ".Z",
+                          " | Extracting...")
                     decompress_on_disk(fileName + ".Z", delete=True)
                 else:
-                    raise Warning(fileName,"does not exist in directory and cannot be found in IGS Station list!")
+                    raise Warning(
+                        fileName,
+                        "does not exist in directory and cannot be found in IGS Station list!"
+                    )
             elif extension == "rnx":
                 if is_IGS(fileName[:4]):
-                    print(fileName + " does not exist in working directory | Downloading...")
+                    print(
+                        fileName +
+                        " does not exist in working directory | Downloading..."
+                    )
                     fileName = fileName.split(".")[0] + ".crx"
                     fileEpoch = doy2date(fileName)
-                    download.get_rinex3([fileName[:4]], fileEpoch, Datetime = True)
-                    print(" | Download completed for", fileName + ".gz", " | Extracting...")
+                    download.get_rinex3([fileName[:4]],
+                                        fileEpoch,
+                                        Datetime=True)
+                    print(" | Download completed for", fileName + ".gz",
+                          " | Extracting...")
                     decompress_on_disk(fileName + ".gz", delete=True)
                 else:
-                    raise Warning(fileName,"does not exist in directory and cannot be found in IGS Station list!")
+                    raise Warning(
+                        fileName,
+                        "does not exist in directory and cannot be found in IGS Station list!"
+                    )
             elif extension == "crx":
                 if is_IGS(fileName[:4]):
-                    print(fileName + ".gz does not exist in working directory | Downloading...")
+                    print(
+                        fileName +
+                        ".gz does not exist in working directory | Downloading..."
+                    )
                     fileEpoch = doy2date(fileName)
-                    download.get_rinex3([fileName[:4]], fileEpoch, Datetime = True)
+                    download.get_rinex3([fileName[:4]],
+                                        fileEpoch,
+                                        Datetime=True)
                     decompress_on_disk(fileName + ".gz", delete=True)
                 else:
-                    raise Warning(fileName,"does not exist in directory and cannot be found in IGS Station list!")
-            elif extension[-1] in {"n","p","g"}:
+                    raise Warning(
+                        fileName,
+                        "does not exist in directory and cannot be found in IGS Station list!"
+                    )
+            elif extension[-1] in {"n", "p", "g"}:
                 if is_IGS(fileName[:4]):
-                    print(fileName + ".Z does not exist in working directory | Downloading...")
+                    print(
+                        fileName +
+                        ".Z does not exist in working directory | Downloading..."
+                    )
                     fileEpoch = doy2date(fileName)
-                    download.get_navigation([fileName[:4]], fileEpoch, Datetime = True)
+                    download.get_navigation([fileName[:4]],
+                                            fileEpoch,
+                                            Datetime=True)
                     decompress_on_disk(fileName + ".gz", delete=True)
-            elif extension in {"clk","clk_05s"}:
+            elif extension in {"clk", "clk_05s"}:
                 downloadName = download.get_clock(fileName)
                 decompress_on_disk(downloadName, delete=True)
             elif extension == "sp3":
@@ -105,24 +141,24 @@ def isexist(fileName):
                 decompress_on_disk(fileName + ".gz", delete=True)
             else:
                 raise Warning("Unknown file extension:", extension)
-                
+
 # --------- case where a zip of the required file exists but not the file itself -------
         else:
             fileName = does_a_zip_exist(fileName)
             print(fileName + " exists | Extracting...")
             decompress_on_disk(fileName, delete=True)
-            
- # --------- case where the required file and also a zip of it exist -------------------
+
+# --------- case where the required file and also a zip of it exist -------------------
     elif does_a_zip_exist(fileName):
         # one could decide to re-extract the zip again instead
         print(fileName + " exists | Reading...")
-        
- # --------- case where the required file exists and is a zip file ---------------------
+
+# --------- case where the required file exists and is a zip file ---------------------
     elif iszip(fileName):
         import pdb
         decompress_on_disk(fileName, delete=True)
-        print(fileName + " exists | Reading...") 
-        
- # --------- case where the required file exists and is not a zip file -----------------
+        print(fileName + " exists | Reading...")
+
+# --------- case where the required file exists and is not a zip file -----------------
     else:
         print(fileName + " exists | Reading...")
